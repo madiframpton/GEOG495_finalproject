@@ -2,7 +2,7 @@
 I've chosen to create a map tool for users to locate and look-up various P-Patch gardens around the Seattle Area. This tool provides the user with the name, address, and the website url for the user to copy and paste into their browers to find more information. 
 
 ## Map Application
-![P-Patch Community Gardens in Seattle WA](https://madiframpton.github.io/GEOG495_ppatch_gardens/)
+[P-Patch Community Gardens in Seattle WA](https://madiframpton.github.io/GEOG495_ppatch_gardens/)
 
 ## Sources
 [Seattle](https://data-seattlecitygis.opendata.arcgis.com/)
