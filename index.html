@@ -8,21 +8,187 @@
 <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js"></script>
 	<style>
 		body { 
-		margin: 0; padding: 0; 
+		color: #404040;
+    	font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+    	margin: 0;
+    	padding: 0;
+    	-webkit-font-smoothing: antialiased;
 		}
-		#map { 
-		position: absolute; top: 0; bottom: 0; width: 100%; 
-		}
+
+		h1 {
+		font-size: 22px;
+		margin: 0;
+		font-weight: 400;
+		line-height: 20px;
+		padding: 20px 2px;
+	}
+
+		a {
+		color: #404040;
+		text-decoration: none;
+	}
+
+		a:hover {
+		color: #101010;
+	}
+
+		* {
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            position: absolute;
+            width: 33.3333%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            border-right: 1px solid rgba(0, 0, 0, 0.25);
+        }
+
+        .map {
+            position: absolute;
+            left: 33.3333%;
+            width: 66.6666%;
+            top: 0;
+            bottom: 0;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin: 0;
+            font-weight: 400;
+            line-height: 20px;
+            padding: 20px 2px;
+        }
+
+        a {
+            color: #404040;
+            text-decoration: none;
+        }
+
+       a:hover {
+            color: #101010;
+        }
+
+        .heading {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            min-height: 60px;
+            line-height: 60px;
+            padding: 0 10px;
+            background-color: #00853e;
+            color: #fff;
+        }
+ 
+        .listings {
+            height: 100%;
+            overflow: auto;
+            padding-bottom: 60px;
+        }
+
+        .listings .item {
+            display: block;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        .listings .item:last-child {
+            border-bottom: none;
+        }
+
+        .listings .item .title {
+            display: block;
+            color: #00853e;
+            font-weight: 700;
+        }
+
+        .listings .item .title small {
+            font-weight: 400;
+        }
+
+        .listings .item.active .title,
+        .listings .item .title:hover {
+            color: #8cc63f;
+        }
+
+        .listings .item.active {
+            background-color: #f8f8f8;
+        } */
+
+        ::-webkit-scrollbar {
+            width: 3px;
+            height: 3px;
+            border-left: 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-track {
+            background: none;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00853e;
+            border-radius: 0;
+        }
+
+        .marker {
+            border: none;
+            cursor: pointer;
+            height: 48px;
+            width: 48px;
+            background-image: url(img/marker.png);
+        } 
+
+        /*Marker tweaks*/
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.mapboxgl-popup-content {
+  font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+  padding: 0;
+  width: 180px;
+}
+
+.mapboxgl-popup-content h3 {
+  background: #91c949;
+  color: #fff;
+  margin: 0;
+  padding: 10px;
+  border-radius: 3px 3px 0 0;
+  font-weight: 700;
+  margin-top: -15px;
+}
+
+.mapboxgl-popup-content h4 {
+  margin: 0;
+  padding: 10px;
+  font-weight: 400;
+}
+
+.mapboxgl-popup-content div {
+  padding: 10px;
+}
+
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
+  margin-top: 15px;
+}
+
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
+  border-bottom-color: #91c949;
+}
 
 	</style>
 </head>
-	
+
 <body>
 	<div class ="sidebar">
 		<div class="heading">
 			<h1>P-Patch Community Gardens</h1>
 		</div>
-		<div id="listings" class="listings"></div>
+		<div id="listings" class="listings" ></div>
 	</div>
 	<div id="map" class="map"></div>
 <script>
@@ -31,10 +197,384 @@
 
 	const map = new mapboxgl.Map({
 		container: 'map', // container ID
-		style: 'mapbox://styles/mapbox/streets-v11', // style URL
-		center: [-74.5, 40], // starting position [lng, lat]
-		zoom: 9 // starting zoom
+		style: 'mapbox://styles/madiframpton/ckwzei2kw16ti14pgkxh4b451', // style URL
+		center: [-122.3321, 47.6062], // starting position [lng, lat]
+		zoom: 11 // starting zoom
 		});
+
+
+		const stores = {
+            "type": "FeatureCollection",
+            "name": "Fire_Stations",
+            "crs": {
+                "type": "name",
+                "properties": {
+                    "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+                }
+            },
+            "features": [{
+                    "type": "Feature",
+                    "properties": {
+						"OBJECTID": 1,
+						"SITE_ID": 46,
+						"NAME": "Beacon Bluff",
+						"ADDRESS": "1701 15th Ave S",
+						"DEPT": "SDOT",
+						"PROGRAM": "P-Patch (public)",
+						"PROGRAM_NO": 1,
+						"ASSGNBYDON": 1,
+						"URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/beacon-bluff",
+						"NUMPLOTS": 14,
+						"DATE_ESTAB": 2002,
+						"SE_ANNO_CAD_DATA": null,
+						"SIZE_SQFT": 1500,
+						"IN_ROW": "Yes",
+						"LOCATION": "S Massachusetts St / 15th Ave S",
+						"AFFILIATION": null, 
+						"AFFILIATION_URL": null
+					}, 
+					"geometry": {
+						"type": "Point",
+						"coordinates": [ -122.314151007855685, 47.588480539232336 ] 
+						} 
+					},
+					{
+						"type": "Feature", 
+						"properties": {
+							"OBJECTID": 2,
+							"SITE_ID": 37,
+							"NAME": "Haller Lake",
+							"ADDRESS": "13045 1st Ave NE",
+							"DEPT": "Church",
+							"PROGRAM": "P-Patch (public)",
+							"PROGRAM_NO": 1,
+							"ASSGNBYDON": 1,
+							"URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/haller-lake", 
+							"NUMPLOTS": 52, 
+							"DATE_ESTAB": 1998,
+							"SE_ANNO_CAD_DATA": null,
+							"SIZE_SQFT": 12500,
+							"IN_ROW": "No",
+							"LOCATION": "N 130th St / 1st Ave NE",
+							"AFFILIATION": null, 
+							"AFFILIATION_URL": null
+						}, 
+						"geometry": { 
+							"type": "Point",
+							"coordinates": [ -122.329272468842177, 47.724064605393892 ] 
+						} 
+					},
+					{ 
+						"type": "Feature",
+						"properties": {
+							"OBJECTID": 3,
+							"SITE_ID": 75,
+							"NAME": "Unpaving Paradise", 
+							"ADDRESS": "200 Summit Ave E", 
+							"DEPT": "Parks", 
+							"PROGRAM": "P-Patch (public)", 
+							"PROGRAM_NO": 1, 
+							"ASSGNBYDON": 1, 
+							"URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/unpaving-paradise", 
+							"NUMPLOTS": 31, 
+							"DATE_ESTAB": 2010, 
+							"SE_ANNO_CAD_DATA": null, 
+							"SIZE_SQFT": 4600, 
+							"IN_ROW": "No", 
+							"LOCATION": "E John St / Summit Ave E", 
+							"AFFILIATION": null, 
+							"AFFILIATION_URL": null 
+						}, 
+						"geometry": { 
+							"type": "Point", 
+							"coordinates": [ -122.325009633800278, 47.619812623549471 ] 
+						} 
+					},
+					{ "type": "Feature", 
+					"properties": { 
+						"OBJECTID": 4, 
+						"SITE_ID": 28, 
+						"NAME": "Queen Anne", 
+						"ADDRESS": "217 Lynn St", 
+						"DEPT": "Parks", 
+						"PROGRAM": "P-Patch (public)", 
+						"PROGRAM_NO": 1, 
+						"ASSGNBYDON": 1, 
+						"URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/queen-anne", 
+						"NUMPLOTS": 73, 
+						"DATE_ESTAB": 1994, 
+						"SE_ANNO_CAD_DATA": null, 
+						"SIZE_SQFT": 15000, 
+						"IN_ROW": "Yes", 
+						"LOCATION": "3rd Ave N / Lynn St", 
+						"AFFILIATION": null, 
+						"AFFILIATION_URL": null 
+					}, 
+						"geometry": { 
+							"type": "Point", 
+							"coordinates": [ -122.35229463034365, 47.638835355994189 ] 
+						} 
+					},
+					{ "type": "Feature", 
+					"properties": {
+						"OBJECTID": 5, 
+						"SITE_ID": 83, 
+						"NAME": "Greenwood Station", 
+						"ADDRESS": "8815 Fremont Ave N", 
+						"DEPT": "Parks", 
+						"PROGRAM": "P-Patch (public)", 
+						"PROGRAM_NO": 1, 
+						"ASSGNBYDON": 1, 
+						"URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/greenwood-station", 
+						"NUMPLOTS": 34, 
+						"DATE_ESTAB": 2012, 
+						"SE_ANNO_CAD_DATA": null, 
+						"SIZE_SQFT": 5500, 
+						"IN_ROW": "No", 
+						"LOCATION": "Fremont Ave N / N 89th St", 
+						"AFFILIATION": null, 
+						"AFFILIATION_URL": null 
+					}, 
+					"geometry": { 
+						"type": "Point", 
+						"coordinates": [ -122.350179336838082, 47.693325076113098 ] 
+					} 
+				},
+{ "type": "Feature", "properties": { "OBJECTID": 6, "SITE_ID": 34, "NAME": "Thomas Street Gardens", "ADDRESS": "1010 E Thomas St", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/thomas-street-gardens", "NUMPLOTS": 28, "DATE_ESTAB": 1997, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 3200, "IN_ROW": "No", "LOCATION": "E Thomas St / 10th Ave E", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.319360369117405, 47.621251365937624 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 7, "SITE_ID": 32, "NAME": "Fremont", "ADDRESS": "3935 Woodland Park Ave N", "DEPT": "GROW", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/fremont", "NUMPLOTS": 28, "DATE_ESTAB": 1995, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 4270, "IN_ROW": "No", "LOCATION": "N 40th St / Woodland Park Ave N", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.345031809851221, 47.655148743754232 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 8, "SITE_ID": 14, "NAME": "Snoqualmie", "ADDRESS": "4549 13th Ave S", "DEPT": "City Light", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/snoqualmie", "NUMPLOTS": 25, "DATE_ESTAB": 1974, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 18000, "IN_ROW": "No", "LOCATION": "13th Ave S / S Snoqualmie St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.316453494807362, 47.562048778901676 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 9, "SITE_ID": 80, "NAME": "Magnolia Manor Park", "ADDRESS": "3500 28th Ave W", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/magnolia-manor-park", "NUMPLOTS": 46, "DATE_ESTAB": 2013, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 15600, "IN_ROW": "No", "LOCATION": "W Bertona St / 26th Ave W", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.390830991739435, 47.650866793889399 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 10, "SITE_ID": 13, "NAME": "Colman Park", "ADDRESS": "1720 32nd Ave S", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/colman-park", "NUMPLOTS": 40, "DATE_ESTAB": 1974, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 14000, "IN_ROW": "No", "LOCATION": "32nd Ave S / S Massachusetts St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.291552208587248, 47.586847545011175 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 11, "SITE_ID": 43, "NAME": "Madison Valley Mad P", "ADDRESS": "3000 E Mercer St", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/madison-valley", "NUMPLOTS": 17, "DATE_ESTAB": 2001, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2500, "IN_ROW": "Yes", "LOCATION": "E Mercer St / 30th Ave E", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.292905398809864, 47.62501783462838 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 12, "SITE_ID": 73, "NAME": "Bitter Lake", "ADDRESS": "N 143rd St & Linden Ave N", "DEPT": "SPU", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/bitter-lake", "NUMPLOTS": 29, "DATE_ESTAB": 2013, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 15000, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.349472725327544, 47.732125420398049 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 13, "SITE_ID": 33, "NAME": "Cascade", "ADDRESS": "310 Minor Ave N", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/cascade", "NUMPLOTS": 57, "DATE_ESTAB": 1996, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 7000, "IN_ROW": "No", "LOCATION": "Minor Ave N / Thomas St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.332610488722977, 47.620972376042197 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 14, "SITE_ID": 3, "NAME": "Evanston", "ADDRESS": "604 N 101st St", "DEPT": "City Light", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/evanston", "NUMPLOTS": 42, "DATE_ESTAB": 1974, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 11600, "IN_ROW": "Yes", "LOCATION": "Evanston Ave N / N 102nd St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.350724402484829, 47.702558360899332 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 15, "SITE_ID": 2, "NAME": "Pinehurst", "ADDRESS": "11525 12th Ave NE", "DEPT": "GROW", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/pinehurst", "NUMPLOTS": 17, "DATE_ESTAB": 1976, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5000, "IN_ROW": "No", "LOCATION": "12th Ave NE / NE 115th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.315606960197101, 47.712843695885169 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 16, "SITE_ID": 86, "NAME": "UpGarden", "ADDRESS": "300 Mercer St", "DEPT": "Center", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/upgarden", "NUMPLOTS": 98, "DATE_ESTAB": 2012, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 25000, "IN_ROW": "No", "LOCATION": "4th Ave N / Mercer St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.350212905241932, 47.624988243517912 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 17, "SITE_ID": 30, "NAME": "Climbing Water", "ADDRESS": "800 Hiawatha Pl S", "DEPT": "Homesight", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/climbing-water", "NUMPLOTS": 13, "DATE_ESTAB": 2006, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 1800, "IN_ROW": "No", "LOCATION": "S Dearborn St / Hiawatha Pl S", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.308937989154913, 47.595012836016963 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 18, "SITE_ID": 91, "NAME": "Troll's Knoll", "ADDRESS": "N 36th St / Aurora Ave N", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 0, "ASSGNBYDON": 0, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/trolls-knoll", "NUMPLOTS": 29, "DATE_ESTAB": 2016, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2000, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.347314106151202, 47.651351358683435 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 19, "SITE_ID": 41, "NAME": "Pelican Tea Garden", "ADDRESS": "1909 E Roy St", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/pelican-tea-garden", "NUMPLOTS": 0, "DATE_ESTAB": 2001, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 1000, "IN_ROW": "Yes", "LOCATION": "E Mercer St / 19th Ave E", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.30663713098275, 47.624821618461581 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 20, "SITE_ID": 50, "NAME": "Solstice", "ADDRESS": "7400 Fauntleroy Way SW", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/solstice", "NUMPLOTS": 34, "DATE_ESTAB": 2003, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 13000, "IN_ROW": "No", "LOCATION": "SW Webster St / 45th Ave SW", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.391002808227881, 47.536187704905444 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 21, "SITE_ID": 16, "NAME": "Delridge", "ADDRESS": "5200 25th Ave SW", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/delridge", "NUMPLOTS": 30, "DATE_ESTAB": 1974, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 9400, "IN_ROW": "Yes", "LOCATION": "Delridge Way SW / Puget Blvd SW", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.363654289820019, 47.555050664138406 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 22, "SITE_ID": 52, "NAME": "Oxbow Park", "ADDRESS": "6400 Corson Ave S", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/oxbow-park", "NUMPLOTS": 23, "DATE_ESTAB": 2004, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5000, "IN_ROW": "No", "LOCATION": "Corson Ave S / S Eddy St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.3212746469938, 47.544993591144575 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 23, "SITE_ID": 6, "NAME": "Burke-Gilman Gardens", "ADDRESS": "5200 Mithun Pl NE", "DEPT": "BEP/PDA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/burke-gilman-gardens", "NUMPLOTS": 23, "DATE_ESTAB": 1989, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 3500, "IN_ROW": "No", "LOCATION": "Mithun Pl NE / NE 52nd St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.280708420124711, 47.66805594994505 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 24, "SITE_ID": 54, "NAME": "Hawkins", "ADDRESS": "504 M L King Jr Way", "DEPT": "DON", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/hawkins", "NUMPLOTS": 18, "DATE_ESTAB": 2005, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2100, "IN_ROW": "No", "LOCATION": "M L King Jr Way / E Jefferson St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.296390562562138, 47.606661743545139 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 25, "SITE_ID": 44, "NAME": "Queen Pea", "ADDRESS": "1800 5th Ave N", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/queen-pea", "NUMPLOTS": 32, "DATE_ESTAB": 2002, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 4000, "IN_ROW": "Yes", "LOCATION": "5th Ave N / Howe St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.346944126610126, 47.635263775668399 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 26, "SITE_ID": 20, "NAME": "Republican", "ADDRESS": "503 20th Ave E", "DEPT": "Private", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/republican", "NUMPLOTS": 23, "DATE_ESTAB": 1986, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2600, "IN_ROW": "No", "LOCATION": "20th Ave E / E Republican St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.306319954295986, 47.623362932393739 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 27, "SITE_ID": 31, "NAME": "Squire Park", "ADDRESS": "152 14th Ave", "DEPT": "DON", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/squire-park", "NUMPLOTS": 35, "DATE_ESTAB": 1995, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5000, "IN_ROW": "No", "LOCATION": "14th Ave / E Fir St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.313970768538596, 47.602868934614911 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 28, "SITE_ID": 1, "NAME": "Jackson Park", "ADDRESS": "13049 10th Ave NE", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/jackson-park", "NUMPLOTS": 51, "DATE_ESTAB": 1974, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 14100, "IN_ROW": "No", "LOCATION": "NE 133rd St / 10th Ave NE", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.318380176423972, 47.72455957155988 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 29, "SITE_ID": 38, "NAME": "Greg's Garden", "ADDRESS": "1401 NW 54th St", "DEPT": "Metro", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/gregs-garden", "NUMPLOTS": 21, "DATE_ESTAB": 1999, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2500, "IN_ROW": "No", "LOCATION": "14th Ave NW / NW 54th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.373892907893264, 47.667679412211271 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 30, "SITE_ID": 15, "NAME": "Maa Nyei Lai Ndeic", "ADDRESS": "4913 Columbia Dr S", "DEPT": "City Light", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/maa-nyei-lai-ndeic-(my-mothers-garden)", "NUMPLOTS": 110, "DATE_ESTAB": 1982, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 44000, "IN_ROW": "No", "LOCATION": "Columbia Dr S / S Ferdinand St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.305604257719324, 47.557315710281991 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 31, "SITE_ID": 55, "NAME": "Spring Street", "ADDRESS": "1101 25th Ave", "DEPT": "DON", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/spring-street", "NUMPLOTS": 13, "DATE_ESTAB": 2009, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 1900, "IN_ROW": "Yes", "LOCATION": "E Spring St / 25th Ave", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.300353713152589, 47.611707744435421 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 32, "SITE_ID": 49, "NAME": "Brandon Street Orchard", "ADDRESS": "4625 S Brandon St", "DEPT": "DON", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/brandon-street-orchard", "NUMPLOTS": 0, "DATE_ESTAB": 2003, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2500, "IN_ROW": "No", "LOCATION": "47th Ave S / S Brandon St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.274230314537022, 47.55311444702307 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 33, "SITE_ID": 5, "NAME": "Picardo Farm", "ADDRESS": "8040 25th Ave NE", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/picardo-farm", "NUMPLOTS": 259, "DATE_ESTAB": 1973, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 98000, "IN_ROW": "Yes", "LOCATION": "25th Ave NE / NE 80th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.30065155972089, 47.687637856394851 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 34, "SITE_ID": 76, "NAME": "Howell Collective", "ADDRESS": "1514 E Howell Street", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/howell-collective", "NUMPLOTS": 0, "DATE_ESTAB": 2011, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 4200, "IN_ROW": "No", "LOCATION": "E Denny Way / 16th Ave", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.311810465812599, 47.618058770798378 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 35, "SITE_ID": 40, "NAME": "Courtland Place", "ADDRESS": "3600 36th Ave S", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/courtland-place", "NUMPLOTS": 23, "DATE_ESTAB": 1999, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2500, "IN_ROW": "Yes", "LOCATION": "S Spokane St / 36th Ave S", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.288532123468798, 47.57157483383692 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 36, "SITE_ID": 87, "NAME": "Licton Springs", "ADDRESS": "2318 N 92nd St", "DEPT": "North Seattle College", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 0, "ASSGNBYDON": 0, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/licton-springs", "NUMPLOTS": 67, "DATE_ESTAB": 2014, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 15000, "IN_ROW": " ", "LOCATION": "College Way N / N 92nd St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.330614368153434, 47.696193121716391 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 37, "SITE_ID": 26, "NAME": "Hazel Heights", "ADDRESS": "4200 Baker Ave NW", "DEPT": "GROW", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/hazel-heights", "NUMPLOTS": 19, "DATE_ESTAB": 2010, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2000, "IN_ROW": "No", "LOCATION": "Baker Ave NW / NW 42nd St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.359397245911055, 47.657827950639643 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 38, "SITE_ID": 35, "NAME": "Greenwood", "ADDRESS": "343 NW 88th St", "DEPT": "GROW", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/greenwood", "NUMPLOTS": 32, "DATE_ESTAB": 1997, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 3200, "IN_ROW": "No", "LOCATION": "3rd Ave NW / NW 88th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.362099927095201, 47.692549690653991 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 39, "SITE_ID": 25, "NAME": "Ida Mia Garden", "ADDRESS": "E Madison St & Lake Washington Blvd E", "DEPT": "Private", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/ida-mia-garden", "NUMPLOTS": 7, "DATE_ESTAB": 1994, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 1600, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.29166013903253, 47.625701751018397 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 40, "SITE_ID": 85, "NAME": "Barton Street", "ADDRESS": "3405 SW Barton St", "DEPT": "SPU", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/barton-street", "NUMPLOTS": 45, "DATE_ESTAB": 2012, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 12000, "IN_ROW": "No", "LOCATION": "SW Barton St / 34th Ave SW", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.37579328158651, 47.520868131662091 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 41, "SITE_ID": 51, "NAME": "Angel Morgan", "ADDRESS": "3956 S Morgan St", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/angel-morgan", "NUMPLOTS": 30, "DATE_ESTAB": 2004, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 22650, "IN_ROW": "Yes", "LOCATION": "42nd Ave S / S Morgan St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.281013396734977, 47.544211802931002 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 42, "SITE_ID": 12, "NAME": "Eastlake", "ADDRESS": "2892 Fairview Ave E", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/eastlake", "NUMPLOTS": 47, "DATE_ESTAB": 1981, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 75000, "IN_ROW": "Yes", "LOCATION": "Eastlake Ave E / E Shelby St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.325371088780031, 47.647480822204173 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 43, "SITE_ID": 72, "NAME": "West Genesee Garden", "ADDRESS": "4101 SW Genesee St", "DEPT": "Private", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/west-genesee-garden", "NUMPLOTS": 12, "DATE_ESTAB": 2009, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 1279, "IN_ROW": "No", "LOCATION": "SW Genesee St / 41st Ave SW", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.384318042654996, 47.564581845236518 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 44, "SITE_ID": 48, "NAME": "Linden Orchard", "ADDRESS": "744 N 67th St", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/linden-orchard", "NUMPLOTS": 25, "DATE_ESTAB": 2003, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2500, "IN_ROW": "No", "LOCATION": "Linden Ave N / N 67th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.347885918071128, 47.678063774935602 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 45, "SITE_ID": 77, "NAME": "Shiga's Garden", "ADDRESS": "5522 University Way NE", "DEPT": "Private", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/shigas-garden", "NUMPLOTS": 18, "DATE_ESTAB": 2010, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2000, "IN_ROW": "No", "LOCATION": "University Way NE / NE 56th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.31266129652056, 47.669142488791167 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 46, "SITE_ID": 87, "NAME": "Westcrest Garden", "ADDRESS": "9000 8th Ave SW", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/p-patch-community-gardening/p-patch-list/westcrest-garden", "NUMPLOTS": 52, "DATE_ESTAB": 2013, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 55000, "IN_ROW": "No", "LOCATION": "SW Barton St / 8th Ave SW", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.343466000116678, 47.522365572111426 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 47, "SITE_ID": 39, "NAME": "Immaculate", "ADDRESS": "18th Ave & E Columbia St", "DEPT": "Church", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/immaculate", "NUMPLOTS": 14, "DATE_ESTAB": 1998, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 1800, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.308638437185238, 47.609373630420336 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 48, "SITE_ID": 53, "NAME": "Maple Leaf", "ADDRESS": "525 NE 103rd St", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/maple-leaf", "NUMPLOTS": 22, "DATE_ESTAB": 2007, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 16000, "IN_ROW": "No", "LOCATION": "5th Ave NE / NE 103rd St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.321959341210416, 47.702898150395001 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 49, "SITE_ID": 79, "NAME": "Leo Street", "ADDRESS": "5115 S Leo St", "DEPT": "Private", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/leo-street", "NUMPLOTS": 43, "DATE_ESTAB": 2012, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2400, "IN_ROW": "No", "LOCATION": "51st Ave S / S Leo St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.26936260203729, 47.502468675500026 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 50, "SITE_ID": 22, "NAME": "Bradner Gardens Park", "ADDRESS": "1750 S Bradner Pl S", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/bradner-gardens-park", "NUMPLOTS": 60, "DATE_ESTAB": 1987, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 14330, "IN_ROW": "No", "LOCATION": "29th Ave S / S Grand St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.295421297180482, 47.587197491356513 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 51, "SITE_ID": 23, "NAME": "Estelle Street", "ADDRESS": "3400 Rainier Ave S", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/estelle-street", "NUMPLOTS": 19, "DATE_ESTAB": 1990, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 6000, "IN_ROW": "Yes", "LOCATION": "33rd Ave S / S Hinds St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.291516164700681, 47.572480564744737 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 52, "SITE_ID": 11, "NAME": "Interbay", "ADDRESS": "2451 15th Ave W", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/interbay", "NUMPLOTS": 132, "DATE_ESTAB": 1974, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 43000, "IN_ROW": "No", "LOCATION": "W Wheeler St / 15th Ave W", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.377064622575347, 47.64119892746394 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 53, "SITE_ID": 8, "NAME": "Ravenna", "ADDRESS": "5200 Ravenna Ave NE", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/ravenna", "NUMPLOTS": 18, "DATE_ESTAB": 1981, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2200, "IN_ROW": "Yes", "LOCATION": "Ravenna Ave NE / NE 52nd St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.30375374499441, 47.666437691178565 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 54, "SITE_ID": 19, "NAME": "Judkins", "ADDRESS": "1107 24th Ave S", "DEPT": "DON/GROW", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/judkins", "NUMPLOTS": 24, "DATE_ESTAB": 1986, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5600, "IN_ROW": "No", "LOCATION": "24th Ave S / S Norman St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.301561540957707, 47.592721314650596 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 55, "SITE_ID": 24, "NAME": "Phinney Ridge", "ADDRESS": "5926 3rd Ave NW", "DEPT": "SDOT", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/phinney-ridge", "NUMPLOTS": 21, "DATE_ESTAB": 1991, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2600, "IN_ROW": "Yes", "LOCATION": "3rd Ave NW / NW 60th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.360432070039991, 47.672397516626908 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 56, "SITE_ID": 9, "NAME": "Good Shepherd", "ADDRESS": "4618 Bagley Ave N", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/good-shepherd", "NUMPLOTS": 42, "DATE_ESTAB": 1981, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 8400, "IN_ROW": "No", "LOCATION": "N 46th St / Bagley Ave N", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.332128782623883, 47.663341232510078 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 57, "SITE_ID": 17, "NAME": "University Heights", "ADDRESS": "5031 University Way NE", "DEPT": "SSD", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/university-heights", "NUMPLOTS": 31, "DATE_ESTAB": 1991, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5000, "IN_ROW": "No", "LOCATION": "University Way NE / NE 50th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.313304680621783, 47.665647905307388 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 58, "SITE_ID": 82, "NAME": "John C. Little Garden", "ADDRESS": "37th Ave S & S Willow St", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/p-patch-community-gardening/p-patch-list/john-c-little-garden", "NUMPLOTS": 26, "DATE_ESTAB": 2013, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 7200, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.286618560456844, 47.539990610521428 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 59, "SITE_ID": 18, "NAME": "Thistle", "ADDRESS": "8420 42nd Ave S", "DEPT": "City Light", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/thistle", "NUMPLOTS": 77, "DATE_ESTAB": 1974, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 130680, "IN_ROW": "No", "LOCATION": "M L King Jr Way S / S Cloverdale St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.280719384416187, 47.52728287972586 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 60, "SITE_ID": 0, "NAME": "Horuichi Park", "ADDRESS": "156 Boren Ave", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 0, "ASSGNBYDON": 0, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/horiuchi-park", "NUMPLOTS": 28, "DATE_ESTAB": 2015, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 4000, "IN_ROW": " ", "LOCATION": "Boren Ave / E Fir St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.318913559987081, 47.603025616263466 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 61, "SITE_ID": 27, "NAME": "Belltown", "ADDRESS": "2520 Elliott Ave", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/belltown", "NUMPLOTS": 35, "DATE_ESTAB": 1995, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 4400, "IN_ROW": "No", "LOCATION": "Elliott Ave / Vine St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.35096000059751, 47.61400525176839 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 62, "SITE_ID": 81, "NAME": "Kirke Park", "ADDRESS": "7028 9th Ave NW", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/kirke-park", "NUMPLOTS": 28, "DATE_ESTAB": 2012, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 7400, "IN_ROW": "No", "LOCATION": "9th Ave NW / NW 73rd St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.368001791997003, 47.680956022625438 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 63, "SITE_ID": 47, "NAME": "Longfellow Creek", "ADDRESS": "2450 SW Thistle St", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/longfellow-creek", "NUMPLOTS": 22, "DATE_ESTAB": 2003, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 4000, "IN_ROW": "No", "LOCATION": "SW Thistle St / 25th Ave SW", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.364135376928203, 47.528548162083531 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 64, "SITE_ID": 10, "NAME": "University District", "ADDRESS": "4009 8th Ave NE", "DEPT": "Metro", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/university-district", "NUMPLOTS": 46, "DATE_ESTAB": 1976, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 14400, "IN_ROW": "No", "LOCATION": "8th Ave NE / NE 40th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.320056143944896, 47.656287236929273 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 65, "SITE_ID": 4, "NAME": "Ballard", "ADDRESS": "8527 25th Ave NW", "DEPT": "Church", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/ballard", "NUMPLOTS": 94, "DATE_ESTAB": 1976, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 18000, "IN_ROW": "No", "LOCATION": "25th Ave NW / NW 85th St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.389345907904953, 47.691498517399332 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 66, "SITE_ID": 88, "NAME": "Broadway Hill", "ADDRESS": "510 Federal Ave E", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/broadway-hill-", "NUMPLOTS": 16, "DATE_ESTAB": 2015, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 0, "IN_ROW": " ", "LOCATION": "Federal Ave E / E Republican St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.318602688051371, 47.623468839439802 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 67, "SITE_ID": 36, "NAME": "Marra Farm", "ADDRESS": "9026 4th Ave S", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/marra-farm", "NUMPLOTS": 39, "DATE_ESTAB": 1997, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5600, "IN_ROW": "No", "LOCATION": "S Director St / 5th Ave S", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.328539170715075, 47.521649655060216 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 68, "SITE_ID": 45, "NAME": "Thyme Patch Park", "ADDRESS": "2853 NW 58th St", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/thyme-patch-park", "NUMPLOTS": 14, "DATE_ESTAB": 2003, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 4800, "IN_ROW": "No", "LOCATION": "NW 58th St / 30th Ave NW", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.395214203087093, 47.670668861757839 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 69, "SITE_ID": 29, "NAME": "Hillman City", "ADDRESS": "4613 S Lucile St", "DEPT": "GROW/Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/hillman-city", "NUMPLOTS": 43, "DATE_ESTAB": 1994, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 18500, "IN_ROW": "Yes", "LOCATION": "S Lucile St / 46th Ave S", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.27470714835421, 47.5525056886421 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 70, "SITE_ID": 7, "NAME": "Magnuson Park", "ADDRESS": "7400 Sand Point Way NE", "DEPT": "Parks", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/magnuson-park", "NUMPLOTS": 128, "DATE_ESTAB": 1977, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 174240, "IN_ROW": "No", "LOCATION": "NE 74th St / Sportsfield Dr NE", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.258233955409864, 47.68289793941333 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 71, "SITE_ID": 21, "NAME": "Beacon Food Forest", "ADDRESS": "3950 15th Ave S", "DEPT": "SPU", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/beacon-food-forest", "NUMPLOTS": 27, "DATE_ESTAB": 2014, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 27000, "IN_ROW": "No", "LOCATION": "15th Ave S / S Dakota St", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.312925510718571, 47.567752944526369 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 72, "SITE_ID": 42, "NAME": "Roosevelt", "ADDRESS": "7012 12th Ave NE", "DEPT": "DON", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/roosevelt", "NUMPLOTS": 29, "DATE_ESTAB": 2003, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 3500, "IN_ROW": "No", "LOCATION": "NE 71st St / 12th Ave NE", "AFFILIATION": null, "AFFILIATION_URL": null }, "geometry": { "type": "Point", "coordinates": [ -122.315315140878056, 47.679912236418765 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 73, "SITE_ID": 68, "NAME": "High Point Juneau Garden and Market Garden", "ADDRESS": "5900 32nd Ave SW", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/high-point-juneau", "NUMPLOTS": 18, "DATE_ESTAB": 1999, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5000, "IN_ROW": "No", "LOCATION": "32nd Ave SW / SW Juneau St", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/high-point" }, "geometry": { "type": "Point", "coordinates": [ -122.37322388919263, 47.549919800381183 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 74, "SITE_ID": 69, "NAME": "High Point MacArthur Lane Park Garden", "ADDRESS": "2726 SW MacArthur Ln", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/high-point-macarthur-lane-park", "NUMPLOTS": 11, "DATE_ESTAB": 2009, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2531, "IN_ROW": "No", "LOCATION": "SW MacArthur Ln / High Point Dr SW", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/high-point" }, "geometry": { "type": "Point", "coordinates": [ -122.36981384386614, 47.550550884813468 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 75, "SITE_ID": 57, "NAME": "Rainier Vista Sunrise Garden", "ADDRESS": "4450 Renton Ave S", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/rainer-vista-sunrise-garden", "NUMPLOTS": 24, "DATE_ESTAB": 2013, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 7100, "IN_ROW": "No", "LOCATION": "S Oregon St / 33rd Ave S", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/rainier-vista" }, "geometry": { "type": "Point", "coordinates": [ -122.291542611206495, 47.563149052785988 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 76, "SITE_ID": 65, "NAME": "NewHolly 29th Ave Garden", "ADDRESS": "29th Ave S / S Brighton St", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/new-holly-29-ave-garden", "NUMPLOTS": 9, "DATE_ESTAB": 2001, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2000, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/newholly" }, "geometry": { "type": "Point", "coordinates": [ -122.296009504747971, 47.541388267964074 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 77, "SITE_ID": 66, "NAME": "NewHolly Power Garden", "ADDRESS": "7123 Holly Park Dr S", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/new-holly-power-garden", "NUMPLOTS": 23, "DATE_ESTAB": 2003, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2400, "IN_ROW": "No", "LOCATION": "Holly Park Dr S / S Myrtle Pl", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/newholly" }, "geometry": { "type": "Point", "coordinates": [ -122.288114435218048, 47.538291926001214 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 78, "SITE_ID": 84, "NAME": "Lake City Court Garden", "ADDRESS": "12536 33rd Ave NE", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/lake-city-court", "NUMPLOTS": 22, "DATE_ESTAB": 2012, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 3000, "IN_ROW": "No", "LOCATION": "33rd Ave NE / NE 125th St", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/lake-city-court" }, "geometry": { "type": "Point", "coordinates": [ -122.291863490394135, 47.719946592865377 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 79, "SITE_ID": 67, "NAME": "NewHolly Youth and Family", "ADDRESS": "32nd Ave S / S Brighton St", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/new-holly-youth-and-family", "NUMPLOTS": 46, "DATE_ESTAB": 1999, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 10500, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/newholly" }, "geometry": { "type": "Point", "coordinates": [ -122.290552001274051, 47.541748704103476 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 80, "SITE_ID": 59, "NAME": "Rainier Vista Dakota West", "ADDRESS": "2902 S Dakota St", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/rainier-vista-dakota-garden", "NUMPLOTS": 36, "DATE_ESTAB": 2008, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 8461, "IN_ROW": "No", "LOCATION": "S Lilac St / M L King Jr Way S", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/rainier-vista" }, "geometry": { "type": "Point", "coordinates": [ -122.297893633943133, 47.566825174124915 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 81, "SITE_ID": 71, "NAME": "Hillside Garden", "ADDRESS": "2570 M L King Jr Way S", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/hillside-garden", "NUMPLOTS": 0, "DATE_ESTAB": 2001, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 8000, "IN_ROW": "No", "LOCATION": "M L King Jr Way S / S McClellan St", "AFFILIATION": "Affordable Housing Resident Priority Given", "AFFILIATION_URL": "http://www.mtbakerhousing.org/MtBakerVillage/" }, "geometry": { "type": "Point", "coordinates": [ -122.295939456742502, 47.579029291344028 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 82, "SITE_ID": 92, "NAME": "Hoa Mai", "ADDRESS": "221 10th Ave S", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": null, "ASSGNBYDON": null, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/hoa-mai", "NUMPLOTS": 20, "DATE_ESTAB": 2017, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 3045, "IN_ROW": "No", "LOCATION": "S Washington St / 10th Ave S", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/yesler" }, "geometry": { "type": "Point", "coordinates": [ -122.319599843488234, 47.600524564803585 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 83, "SITE_ID": 64, "NAME": "NewHolly Lucky Garden", "ADDRESS": "2930 S Holly St", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/new-holly-lucky-garden", "NUMPLOTS": 9, "DATE_ESTAB": 2001, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 2000, "IN_ROW": "No", "LOCATION": "Shaffer Ave S / S Holly St", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/newholly" }, "geometry": { "type": "Point", "coordinates": [ -122.294556124887734, 47.542907145729494 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 84, "SITE_ID": 70, "NAME": "High Point Commons Garden", "ADDRESS": "31st Ave SW & SW Raymond St", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/high-point-commons-garden", "NUMPLOTS": 46, "DATE_ESTAB": 2009, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 5269, "IN_ROW": "No", "LOCATION": null, "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/high-point" }, "geometry": { "type": "Point", "coordinates": [ -122.373188252190971, 47.548167688746894 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 85, "SITE_ID": 63, "NAME": "NewHolly Rockery Community/Market Garden", "ADDRESS": "7409 40th Ave S", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/new-holly-rockery", "NUMPLOTS": 19, "DATE_ESTAB": 2005, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 23000, "IN_ROW": "No", "LOCATION": "S Holly Park Dr  / S 40th St", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/newholly" }, "geometry": { "type": "Point", "coordinates": [ -122.282092243422639, 47.535432148873291 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 86, "SITE_ID": 58, "NAME": "Rainier Vista Snoqualmie Garden", "ADDRESS": "2917 S Snoqualmie St", "DEPT": "SHA", "PROGRAM": "P-Patch (public)", "PROGRAM_NO": 1, "ASSGNBYDON": 1, "URL": "http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/p-patch-list/rainier-vista-snoqualmie", "NUMPLOTS": 18, "DATE_ESTAB": 2006, "SE_ANNO_CAD_DATA": null, "SIZE_SQFT": 1569, "IN_ROW": "No", "LOCATION": "29th Ave S / S Snoqualmie St", "AFFILIATION": "Seattle Housing Authority Resident Priority Given", "AFFILIATION_URL": "https://www.seattlehousing.org/properties/rainier-vista" }, "geometry": { "type": "Point", "coordinates": [ -122.294829561863878, 47.561306387157096 ] } }
+]
+}
+
+stores.features.forEach((store, i) => {
+            store.properties.id = i;
+        });
+
+        /**
+         * Wait until the map loads to make changes to the map.
+         */
+        map.on('load', () => {
+            /**
+             * This is where your '.addLayer()' used to be, instead
+             * add only the source without styling a layer
+             */
+            map.addSource('places', {
+                'type': 'geojson',
+                'data': stores
+            });
+
+            /**
+             * Add all the things to the page:
+             * - The location listings on the side of the page
+             * - The markers onto the map
+             */
+            buildLocationList(stores);
+            addMarkers();
+        });
+
+        /**
+         * Add a marker to the map for every store listing.
+         **/
+        function addMarkers() {
+            /* For each feature in the GeoJSON object above: */
+            for (const marker of stores.features) {
+                /* Create a div element for the marker. */
+                const el = document.createElement('div');
+                /* Assign a unique `id` to the marker. */
+                el.id = `marker-${marker.properties.id}`;
+                /* Assign the `marker` class to each marker for styling. */
+                el.className = 'marker';
+
+                /**
+                 * Create a marker using the div element
+                 * defined above and add it to the map.
+                 **/
+                new mapboxgl.Marker(el, {
+                        offset: [0, -23]
+                    })
+                    .setLngLat(marker.geometry.coordinates)
+                    .addTo(map);
+
+                /**
+                 * Listen to the element and when it is clicked, do three things:
+                 * 1. Fly to the point
+                 * 2. Close all other popups and display popup for clicked store
+                 * 3. Highlight listing in sidebar (and remove highlight for all other listings)
+                 **/
+                el.addEventListener('click', (e) => {
+                    /* Fly to the point */
+                    flyToStore(marker);
+                    /* Close all other popups and display popup for clicked store */
+                    createPopUp(marker);
+                    /* Highlight listing in sidebar */
+                    const activeItem = document.getElementsByClassName('active');
+                    e.stopPropagation();
+                    if (activeItem[0]) {
+                        activeItem[0].classList.remove('active');
+                    }
+                    const listing = document.getElementById(
+                        `listing-${marker.properties.id}`
+                    );
+                    listing.classList.add('active');
+                });
+            }
+        }
+
+        /**
+         * Add a listing for each store to the sidebar.
+         **/
+        function buildLocationList(stores) {
+            for (const store of stores.features) {
+                /* Add a new listing section to the sidebar. */
+                const listings = document.getElementById('listings');
+                const listing = listings.appendChild(document.createElement('div'));
+                /* Assign a unique `id` to the listing. */
+                listing.id = `listing-${store.properties.id}`;
+                /* Assign the `item` class to each listing for styling. */
+                listing.className = 'item';
+
+                /* Add the link to the individual listing created above. */
+                const link = listing.appendChild(document.createElement('a'));
+                link.href = '#';
+                link.className = 'title';
+                link.id = `link-${store.properties.id}`;
+                link.innerHTML = `${store.properties.ADDRESS}`;
+
+                /* Add details to the individual listing. */
+                const details = listing.appendChild(document.createElement('div'));
+                details.innerHTML = `${store.properties.NAME}`;
+                if (store.properties.name) {
+                    details.innerHTML += ` &middot; ${store.properties.NAME}`;
+                }
+
+                /**
+                 * Listen to the element and when it is clicked, do four things:
+                 * 1. Update the `currentFeature` to the store associated with the clicked link
+                 * 2. Fly to the point
+                 * 3. Close all other popups and display popup for clicked store
+                 * 4. Highlight listing in sidebar (and remove highlight for all other listings)
+                 **/
+                link.addEventListener('click', function () {
+                    for (const feature of stores.features) {
+                        if (this.id === `link-${feature.properties.id}`) {
+                            flyToStore(feature);
+                            createPopUp(feature);
+                        }
+                    }
+                    const activeItem = document.getElementsByClassName('active');
+                    if (activeItem[0]) {
+                        activeItem[0].classList.remove('active');
+                    }
+                    this.parentNode.classList.add('active');
+                });
+            }
+        }
+
+        /**
+         * Use Mapbox GL JS's `flyTo` to move the camera smoothly
+         * a given center point.
+         **/
+        function flyToStore(currentFeature) {
+            map.flyTo({
+                center: currentFeature.geometry.coordinates,
+                zoom: 15
+            });
+        }
+
+        /**
+         * Create a Mapbox GL JS `Popup`.
+         **/
+        function createPopUp(currentFeature) {
+            const popUps = document.getElementsByClassName('mapboxgl-popup');
+            if (popUps[0]) popUps[0].remove();
+            const popup = new mapboxgl.Popup({
+                    closeOnClick: false
+                })
+                .setLngLat(currentFeature.geometry.coordinates)
+                .setHTML(
+                    `<h3>Fire Stations</h3><h4>${currentFeature.properties.NAME}</h4><h4>${currentFeature.properties.ADDRESS}</h4><h4>${currentFeature.properties.URL}</h4>`
+                )
+                .addTo(map);
+        }
+
 </script>
  
 </body>
