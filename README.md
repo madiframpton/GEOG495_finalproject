@@ -1,5 +1,5 @@
 # P-Patch Community Gardens - Locator
-### Map Application:
+## Map Application:
 [P-Patch Community Gardens in Seattle WA](https://madiframpton.github.io/GEOG495_ppatch_gardens/)
 
 
