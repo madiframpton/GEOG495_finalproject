@@ -522,7 +522,7 @@ stores.features.forEach((store, i) => {
                 })
                 .setLngLat(currentFeature.geometry.coordinates)
                 .setHTML(
-                    `<h3><strong>${currentFeature.properties.NAME}</strong></h3><p>${currentFeature.properties.ADDRESS}</p><p>[Website Link](${currentFeature.properties.URL})</p>`
+                    `<h3><strong>${currentFeature.properties.NAME}</strong></h3><p>${currentFeature.properties.ADDRESS}</p><p>Website Link: ${currentFeature.properties.URL}</p>`
                 )
                 .addTo(map);
         }
