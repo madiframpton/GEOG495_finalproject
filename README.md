@@ -13,8 +13,8 @@ The purpose of the application is to showcase the 89 community garden spaces in 
 ![Screen Shot 2021-12-11 at 9 06 25 PM](https://user-images.githubusercontent.com/91759168/145701081-d47c1b06-efd0-4dd7-a8ee-b3e9e331f63f.png)
 
 ### Sources
-My data was taken from the City of Seattle GIS website
-[Seattle](https://data-seattlecitygis.opendata.arcgis.com/)
+My data was taken from the City of Seattle GIS 
+[website](https://data-seattlecitygis.opendata.arcgis.com/)
 
 
 
