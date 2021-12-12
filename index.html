@@ -423,20 +423,33 @@ stores.features.forEach((store, i) => {
 
         map.on('load', () => {
 		
-		  map.addLayer({
-		    'id': 'locations',
-		    'type': 'circle',
-		    'paint' : {
-                        'circle-radius': 5,
+		
+		map.addSource('stores', {
+                    type: 'geojson',
+                    data: stores
+                });
+
+                map.addLayer({
+                    'id': 'locations',
+                    'type': 'circle',
+                    'source': 'stores',
+                    'paint': {
+                        'circle-radius': 8,
                         'circle-stroke-width': 2,
                         'circle-color': 'green',
                         'circle-stroke-color': 'white'
-                    }    
-		    'source': {
-		      'type': 'geojson',
-		      'data': stores
-		    }
-		  });
+                    }
+                });
+		
+// 		  map.addLayer({
+// 		    id: 'locations',
+// 		    type: 'circle',
+// 		    source: {
+// 		      type: 'geojson',
+// 		      data': stores
+// 		    }
+		   
+// 		  });
 
 
             buildLocationList(stores);
