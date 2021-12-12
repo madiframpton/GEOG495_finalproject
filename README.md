@@ -4,7 +4,7 @@
 
 
 ## Description: 
-The purpose of my application is to showcase the 89 community garden spaces in and around Seattle, and provide the user with a url (to be copied and pasted into their browser) where they may learn more information about the garden, the availability, and how to sign up for a plot. Urban gardening is on the rise and spaces in these P-Patch gardens are starting to become high demand. This application allows to user to browse the location of each garden, and learn if it is the right space for them. Below is a screenshot of the type of information displayed for each P-Patch Community Garden. The user can either scroll through the list of community gardens in the sidebar, or click on the dots on the map to display the pop-up informational window unique to each P-Patch. 
+The purpose of my application is to showcase the community garden spaces in and around Seattle known as P-patches, and provide the user with a url (to be copied and pasted into their browser) where they may learn more information about the garden, the availability, and how to sign up for a plot. Urban gardening is on the rise and spaces in these P-Patch gardens are starting to become high demand. This application allows to user to browse the location of each garden, and learn if it is the right space for them. Below is a screenshot of the type of information displayed for each P-Patch Community Garden. The user can either scroll through the list of community gardens in the sidebar, or click on the dots on the map to display the pop-up informational window unique to each P-Patch. 
 
 
 ![Screen Shot 2021-12-11 at 9 06 25 PM](https://user-images.githubusercontent.com/91759168/145701081-d47c1b06-efd0-4dd7-a8ee-b3e9e331f63f.png)
