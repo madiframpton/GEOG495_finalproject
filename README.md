@@ -17,12 +17,13 @@ The first community garden was created during an economic downturn for Seattle p
 ![Screen Shot 2021-12-11 at 8 57 24 PM](https://user-images.githubusercontent.com/91759168/145700897-0c0a639b-29a0-42b7-b9cc-2606798dd872.png)
 
 As pictured above by the screenshot from my application, 89 community gardens now span the city totaling 33.7 acres of public land - which can be plotted and harvested by anyone in the surrounding community. Each garden space varies in size, number of plots, wait times, and features such as picnic areas, benches, raised beds, etc. They are also reflective of the neighborhoods in which they are located, based on the gardening styles and types of foods grown. Every p-patch is unique from the next, however all of these community gardens share a clear dedication to strengthening community bonds and enriching the city's drive towards sustainable growth and urban agriculture in the future. Community garden have grown tremendously since the first P-Patch in the 1970s, and will continue to become more and more popular - as trends have already shown. 
-Applied Libraried: 
-Mapbox gl js 
 
 ### Sources
-My data was taken from the City of Seattle GIS 
-[website](https://data-seattlecitygis.opendata.arcgis.com/)
+Seattle GIS: https://data-seattlecitygis.opendata.arcgis.com/
+
+Appplied Library: Mapbox GL JS
+
+
 
 
 
