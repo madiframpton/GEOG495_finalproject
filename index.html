@@ -133,14 +133,6 @@
             border-radius: 0;
         }
 
-/*         .marker {
-            border: none;
-            cursor: pointer;
-            height: 48px;
-            width: 48px;
-            background-image: url(leaf.png);
-        }  */
-
         /*Marker tweaks*/
 .mapboxgl-popup-close-button {
   display: none;
@@ -203,7 +195,7 @@
 		});
 
 
-		const stores = {
+	const stores = {
             "type": "FeatureCollection",
             "name": "PPatches",
             "crs": {
@@ -430,87 +422,52 @@ stores.features.forEach((store, i) => {
 
 
         map.on('load', () => {
-
-//             map.addSource('places', {
-//                 'type': 'geojson',
-//                 'data': stores
-//             });
+		
 		  map.addLayer({
 		    id: 'locations',
 		    type: 'circle',
-		    /* Add a GeoJSON source containing place coordinates and information. */
 		    source: {
 		      type: 'geojson',
 		      data: stores
 		    }
+		    'paint': {
+                        'circle-radius': 5,
+                        'circle-stroke-width': 2,
+                        'circle-color': 'green',
+                        'circle-stroke-color': 'white'
+                    }    
 		  });
 
 
             buildLocationList(stores);
-           // addMarkers();
         });
 	
-map.on('click', (event) => {
+		map.on('click', (event) => {
+
+		  const features = map.queryRenderedFeatures(event.point, {
+		    layers: ['locations']
+		  });
+
+
+		  if (!features.length) return;
+			
+		  const clickedPoint = features[0];
+
+
+		  flyToStore(clickedPoint);
+		  createPopUp(clickedPoint);
+
+
+		  const activeItem = document.getElementsByClassName('active');
+		  if (activeItem[0]) {
+		    activeItem[0].classList.remove('active');
+		  }
+		  const listing = document.getElementById(
+		    `listing-${clickedPoint.properties.id}`
+		  );
+		  listing.classList.add('active');
+		});
   
-  const features = map.queryRenderedFeatures(event.point, {
-    layers: ['locations']
-  });
-
- 
-  if (!features.length) return;
-
-  const clickedPoint = features[0];
-
-  
-  flyToStore(clickedPoint);
-
-  
-  createPopUp(clickedPoint);
-
-  
-  const activeItem = document.getElementsByClassName('active');
-  if (activeItem[0]) {
-    activeItem[0].classList.remove('active');
-  }
-  const listing = document.getElementById(
-    `listing-${clickedPoint.properties.id}`
-  );
-  listing.classList.add('active');
-});
-
-//         function addMarkers() {
-      
-//             for (const marker of stores.features) {
-//                 const el = document.createElement('div');
-//                 el.id = `marker-${marker.properties.id}`
-//                 el.className = 'marker';
-
-  
-//                 new mapboxgl.Marker(el, {
-//                         offset: [0, -23]
-//                     })
-//                     .setLngLat(marker.geometry.coordinates)
-//                     .addTo(map);
-
- 
-//                 el.addEventListener('click', (e) => {
-//                     /* Fly to the point */
-//                     flyToStore(marker);
-//                     /* Close all other popups and display popup for clicked store */
-//                     createPopUp(marker);
-//                     /* Highlight listing in sidebar */
-//                     const activeItem = document.getElementsByClassName('active');
-//                     e.stopPropagation();
-//                     if (activeItem[0]) {
-//                         activeItem[0].classList.remove('active');
-//                     }
-//                     const listing = document.getElementById(
-//                         `listing-${marker.properties.id}`
-//                     );
-//                     listing.classList.add('active');
-//                 });
-//             }
-//         }
 
         function buildLocationList(stores) {
             for (const store of stores.features) {
