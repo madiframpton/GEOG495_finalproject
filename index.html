@@ -205,7 +205,7 @@
 
 		const stores = {
             "type": "FeatureCollection",
-            "name": "Fire_Stations",
+            "name": "PPatches",
             "crs": {
                 "type": "name",
                 "properties": {
@@ -478,22 +478,17 @@ stores.features.forEach((store, i) => {
 
         function buildLocationList(stores) {
             for (const store of stores.features) {
-                /* Add a new listing section to the sidebar. */
                 const listings = document.getElementById('listings');
                 const listing = listings.appendChild(document.createElement('div'));
-                /* Assign a unique `id` to the listing. */
                 listing.id = `listing-${store.properties.id}`;
-                /* Assign the `item` class to each listing for styling. */
                 listing.className = 'item';
 
-                /* Add the link to the individual listing created above. */
                 const link = listing.appendChild(document.createElement('a'));
                 link.href = '#';
                 link.className = 'title';
                 link.id = `link-${store.properties.id}`;
                 link.innerHTML = `${store.properties.NAME}`;
 
-                /* Add details to the individual listing. */
                 const details = listing.appendChild(document.createElement('div'));
                 details.innerHTML = `${store.properties.ADDRESS}`;
                 if (store.properties.name) {
@@ -517,10 +512,6 @@ stores.features.forEach((store, i) => {
             }
         }
 
-        /**
-         * Use Mapbox GL JS's `flyTo` to move the camera smoothly
-         * a given center point.
-         **/
         function flyToStore(currentFeature) {
             map.flyTo({
                 center: currentFeature.geometry.coordinates,
@@ -528,9 +519,6 @@ stores.features.forEach((store, i) => {
             });
         }
 
-        /**
-         * Create a Mapbox GL JS `Popup`.
-         **/
         function createPopUp(currentFeature) {
             const popUps = document.getElementsByClassName('mapboxgl-popup');
             if (popUps[0]) popUps[0].remove();
