@@ -10,6 +10,5 @@ The purpose of the application is to showcase the 89 community garden spaces in 
 [P-Patch Community Gardens in Seattle WA](https://madiframpton.github.io/GEOG495_ppatch_gardens/)
 
 ## Sources
-My data was taken from the City of Seattle GIS website. The icon for each location was provided by the website Flaticon:
+My data was taken from the City of Seattle GIS website
 [Seattle](https://data-seattlecitygis.opendata.arcgis.com/)
-[map icon](https://www.flaticon.com/free-icons/my-maps?gclsrc=aw.ds&&gclid=CjwKCAiA78aNBhAlEiwA7B76px1C-ZjF9wco7o1TmMehbxwrutf6jjiJKNPHXckKLULNNJlSUmh26xoCI5MQAvD_BwE)
