@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js"></script>
+ <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js">
+    </script>
 	<link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css"
         type="text/css" />
@@ -485,18 +487,13 @@ function initGeocoder(stores) {
                 marker: true,
                 bbox: [-122.4234, 47.4949, -122.2649, 48.7406]
             });
-            // buildLocationList(stores);
+
             map.addControl(geocoder, 'top-left');
             geocoder.on('result', (event) => {
                 /* Get the coordinate of the search result */
                 const searchResult = event.result.geometry;
 
-                /**
-                 * Calculate distances:
-                 * For each store, use turf.disance to calculate the distance
-                 * in miles between the searchResult and the store. Assign the
-                 * calculated value to a property called `distance`.
-                 */
+
                 const options = {
                     units: 'miles'
                 };
@@ -508,10 +505,7 @@ function initGeocoder(stores) {
                     );
                 }
 
-                /**
-                 * Sort stores by distance from closest to the `searchResult`
-                 * to furthest.
-                 */
+
                 stores.features.sort((a, b) => {
                     if (a.properties.distance > b.properties.distance) {
                         return 1;
@@ -522,31 +516,21 @@ function initGeocoder(stores) {
                     return 0; // a must be equal to b
                 });
 
-                /**
-                 * Rebuild the listings:
-                 * Remove the existing listings and build the location
-                 * list again using the newly sorted stores.
-                 */
+
                 const listings = document.getElementById('listings');
                 while (listings.firstChild) {
                     listings.removeChild(listings.firstChild);
                 }
                 buildLocationList(stores);
 
-                /* Open a popup for the closest store. */
                 createPopUp(stores.features[0]);
 
-                /** Highlight the listing for the closest store. */
                 const activeListing = document.getElementById(
                     `listing-${stores.features[0].properties.id}`
                 );
                 activeListing.classList.add('active');
 
-                /**
-                 * Adjust the map camera:
-                 * Get a bbox that contains both the geocoder result and
-                 * the closest store. Fit the bounds to that bbox.
-                 */
+
                 const bbox = getBbox(stores, 0, searchResult);
                 map.fitBounds(bbox, {
                     padding: 100
