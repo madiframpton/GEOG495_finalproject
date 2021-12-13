@@ -26,7 +26,7 @@ As pictured above by the screenshot from my application, 89 community gardens no
 
 [Seattle P-Patch Website](http://www.seattle.gov/neighborhoods/programs-and-services/p-patch-community-gardening/about-the-p-patch-program)
 
-Appplied Library: Mapbox GL JS 
+[Mapbox GL JS](https://www.mapbox.com/)
 
 
 
